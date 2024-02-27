@@ -16,16 +16,6 @@ func NewTree() *Tree {
 	}
 }
 
-func (t *Tree) ShowAll() {
-	for _, n := range t.nodes {
-		if n.IsDir {
-			println(GetAbsPath(n.Name, n.Path) + "/")
-		} else {
-			println(GetAbsPath(n.Name, n.Path))
-		}
-	}
-}
-
 func (t *Tree) Touch(name, path string) error {
 	if !strings.HasPrefix(path, "/") || strings.HasSuffix(name, "/") {
 		return errors.New("invalid path")
@@ -103,11 +93,15 @@ func (t *Tree) addNode(name, path string) error {
 	return nil
 }
 
-func (t *Tree) Ls(path string) (nodes []*Node, err error) {
-	list := []*Node{}
+func (t *Tree) Ls(path string) (items []string, err error) {
+	list := []string{}
 	for _, n := range t.nodes {
 		if n.Path == path {
-			list = append(list, n)
+			if n.IsDir {
+				list = append(list, n.Name+"/")
+			} else {
+				list = append(list, n.Name)
+			}
 		}
 	}
 

@@ -3,3 +3,6 @@ build:
 
 run: build
 	@./bin/aimerfs
+
+test:
+	@go test -v ./...

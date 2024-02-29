@@ -16,13 +16,27 @@ func NewTree() *Tree {
 	}
 }
 
+var (
+	ErrInvalidPath = errors.New("invalid path")
+	ErrInvalidName = errors.New("invalid name")
+	ErrConflictDir = func(name string) error {
+		return fmt.Errorf("directory %s already exists", name)
+	}
+	ErrConflictFile = func(name string) error {
+		return fmt.Errorf("file %s already exists", name)
+	}
+	ErrNotFound = func(name string) error {
+		return fmt.Errorf("%s not found", name)
+	}
+)
+
 func (t *Tree) Touch(name, path string) error {
 	if !strings.HasPrefix(path, "/") || strings.HasSuffix(name, "/") {
-		return errors.New("invalid path")
+		return ErrInvalidPath
 	}
 
 	if strings.HasSuffix(name, "/") {
-		return errors.New("invalid name")
+		return ErrInvalidName
 	}
 
 	if name == "" || path == "" {
@@ -33,7 +47,7 @@ func (t *Tree) Touch(name, path string) error {
 
 func (t *Tree) Mkdir(name, path string) error {
 	if !strings.HasPrefix(path, "/") || strings.HasSuffix(name, "/") {
-		return errors.New("invalid path")
+		return ErrInvalidPath
 	}
 
 	if !strings.HasSuffix(name, "/") {
@@ -69,7 +83,7 @@ func (t *Tree) addNode(name, path string) error {
 		}
 
 		if p == nil {
-			return fmt.Errorf("%s not found", path)
+			return ErrNotFound(parentName)
 		}
 	}
 
@@ -77,9 +91,9 @@ func (t *Tree) addNode(name, path string) error {
 	for _, n := range t.nodes {
 		if n.Path == path && n.Name == name && n.IsDir == isDir {
 			if isDir {
-				return fmt.Errorf("directory %s already exists", name)
+				return ErrConflictDir(name)
 			} else {
-				return fmt.Errorf("file %s already exists", name)
+				return ErrConflictFile(name)
 			}
 		}
 	}

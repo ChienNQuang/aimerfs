@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { FileSystemInput } from '@/features/fileSystem'
+import { FileSystemShell } from '@/features/fileSystem'
+import MainLayout from '@/layouts/MainLayout.vue'
 </script>
 
 <template>
-  <FileSystemInput />
+  <MainLayout>
+    <FileSystemShell />
+  </MainLayout>
 </template>

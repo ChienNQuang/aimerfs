@@ -1,1 +1,1 @@
-export { default as FileSystemInput } from './components/Input.vue'
+export { default as FileSystemShell } from './components/Shell.vue'
